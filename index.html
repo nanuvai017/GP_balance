@@ -58,9 +58,13 @@
                 alert("দয়া করে নম্বর প্রবেশ করুন!");
                 return;
             }
+            if (!/^\d{10}$/.test(number)) {
+                alert("অনুগ্রহ করে ১০ ডিজিটের সঠিক নম্বর প্রদান করুন!");
+                return;
+            }
 
             // এখানে API থেকে ব্যালেন্স চেক করা হবে
-            fetch(`http://lmnx9.rf.gd/api/gp-balance-ck.php?number=${number}`)
+            fetch(`https://lmnx9.rf.gd/api/gp-balance-ck.php?number=${encodeURIComponent(number)}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.balance) {
