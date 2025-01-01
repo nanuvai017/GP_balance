@@ -87,12 +87,19 @@
 
             // Fetch API data
             fetch(apiUrl)
-                .then(response => response.text()) // Assuming the response is text-based (adjust as needed)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text(); // Use text() instead of json()
+                })
                 .then(data => {
+                    console.log(data); // For debugging
+                    // Assuming the data is a balance string
                     resultDiv.innerHTML = `Balance: ${data}`;
                 })
                 .catch(error => {
-                    resultDiv.innerHTML = 'Error fetching balance. Please try again later.';
+                    resultDiv.innerHTML = `Error: ${error.message}`;
                     console.error('Error:', error);
                 });
         }
