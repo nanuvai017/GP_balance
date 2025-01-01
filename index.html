@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ব্যালেন্স চেক</title>
+    <title>GP Balance Checker</title>
     <style>
         body {
             background-color: black;
@@ -17,7 +17,7 @@
             padding: 20px;
             border: 2px solid #00ff00;
             border-radius: 10px;
-            max-width: 500px;
+            max-width: 400px;
         }
         button {
             background-color: #00ff00;
@@ -32,76 +32,70 @@
         button:hover {
             background-color: #009900;
         }
-        .warning {
-            color: yellow;
-            margin: 10px 0;
-        }
-        input[type="text"] {
+        input {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            background-color: black;
+            color: #00ff00;
         }
         footer {
             margin-top: 20px;
             font-size: 12px;
         }
-        #balanceDisplay {
+        footer a {
+            color: #00ff00;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        .result {
             margin-top: 20px;
-            font-size: 18px;
             color: yellow;
+            font-size: 18px;
         }
     </style>
-    <script>
-        function checkBalance() {
-            const number = document.getElementById('number').value;
-
-            // ইনপুট ফাঁকা না হওয়া চেক করা
-            if (number === '') {
-                alert("দয়া করে নম্বর প্রবেশ করুন!");
-                return;
-            }
-
-            // গ্রামীণফোন নম্বর ভ্যালিডেশন (১১ ডিজিট)
-            if (!/^(017|019|013)\d{8}$/.test(number)) {
-                alert("অনুগ্রহ করে সঠিক গ্রামীণফোন নম্বর (১১ ডিজিট) প্রদান করুন!");
-                return;
-            }
-
-            console.log("নম্বরটি সঠিক:", number);  // লগ: সঠিক নম্বর
-
-            // API থেকে ব্যালেন্স চেক করা
-            fetch(`https://lmnx9.rf.gd/api/gp-balance-ck.php?number=${encodeURIComponent(number)}`)
-                .then(response => {
-                    console.log('API Response:', response);  // API রেসপন্স চেক করুন
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('API Data:', data);  // API ডেটা চেক করুন
-                    if (data.balance) {
-                        document.getElementById('balanceDisplay').innerHTML = `ব্যালেন্স: ${data.balance}`;
-                    } else {
-                        document.getElementById('balanceDisplay').innerHTML = 'ব্যালেন্স পাওয়া যায়নি।';
-                    }
-                })
-                .catch(error => {
-                    console.log('Error:', error);  // ত্রুটি বার্তা লগ করুন
-                    document.getElementById('balanceDisplay').innerHTML = 'ত্রুটি: কিছু ভুল হয়েছে।';
-                });
-        }
-    </script>
 </head>
 <body>
     <div class="container">
-        <h1>ব্যালেন্স চেক</h1>
-        <p class="warning">⚠️ দয়া করে সঠিক নম্বর প্রদান করুন।</p>
-        <form method="POST">
-            <input type="text" id="number" name="number" placeholder="নম্বর দিন" required>
-            <button type="button" onclick="checkBalance()">ব্যালেন্স চেক করুন</button>
+        <h1>GP Balance Checker</h1>
+        <p>ℹ️ Enter your GP number below to check balance.</p>
+        <form id="gpForm" onsubmit="checkBalance(event)">
+            <input type="text" id="gpNumber" placeholder="Enter GP Number (e.g., 017XXXXXXXX)" required>
+            <button type="submit">Check Balance</button>
         </form>
-        <div id="balanceDisplay"></div>
+        <div id="result" class="result"></div>
         <footer>
             <p>💻 Website Made By <a href="https://www.facebook.com/groups/511757864920906/" target="_blank">Anonymous Mujahideen Force</a></p>
         </footer>
     </div>
+
+    <script>
+        function checkBalance(event) {
+            event.preventDefault(); // Prevent form submission
+            const gpNumber = document.getElementById('gpNumber').value;
+            const resultDiv = document.getElementById('result');
+            
+            // Clear previous result
+            resultDiv.innerHTML = '';
+
+            // API URL with the user input
+            const apiUrl = `http://lmnx9.rf.gd/api/gp-balance-ck.php?number=${gpNumber}`;
+
+            // Fetch API data
+            fetch(apiUrl)
+                .then(response => response.text()) // Assuming the response is text-based (adjust as needed)
+                .then(data => {
+                    resultDiv.innerHTML = `Balance: ${data}`;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = 'Error fetching balance. Please try again later.';
+                    console.error('Error:', error);
+                });
+        }
+    </script>
 </body>
 </html>
