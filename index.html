@@ -54,19 +54,29 @@
     <script>
         function checkBalance() {
             const number = document.getElementById('number').value;
+
+            // ইনপুট ফাঁকা না হওয়া চেক করা
             if (number === '') {
                 alert("দয়া করে নম্বর প্রবেশ করুন!");
                 return;
             }
-            if (!/^\d{10}$/.test(number)) {
-                alert("অনুগ্রহ করে ১০ ডিজিটের সঠিক নম্বর প্রদান করুন!");
+
+            // গ্রামীণফোন নম্বর ভ্যালিডেশন (১১ ডিজিট)
+            if (!/^(017|019|013)\d{8}$/.test(number)) {
+                alert("অনুগ্রহ করে সঠিক গ্রামীণফোন নম্বর (১১ ডিজিট) প্রদান করুন!");
                 return;
             }
 
-            // এখানে API থেকে ব্যালেন্স চেক করা হবে
+            console.log("নম্বরটি সঠিক:", number);  // লগ: সঠিক নম্বর
+
+            // API থেকে ব্যালেন্স চেক করা
             fetch(`https://lmnx9.rf.gd/api/gp-balance-ck.php?number=${encodeURIComponent(number)}`)
-                .then(response => response.json())
+                .then(response => {
+                    console.log('API Response:', response);  // API রেসপন্স চেক করুন
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('API Data:', data);  // API ডেটা চেক করুন
                     if (data.balance) {
                         document.getElementById('balanceDisplay').innerHTML = `ব্যালেন্স: ${data.balance}`;
                     } else {
@@ -74,6 +84,7 @@
                     }
                 })
                 .catch(error => {
+                    console.log('Error:', error);  // ত্রুটি বার্তা লগ করুন
                     document.getElementById('balanceDisplay').innerHTML = 'ত্রুটি: কিছু ভুল হয়েছে।';
                 });
         }
