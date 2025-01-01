@@ -52,57 +52,19 @@
         footer a:hover {
             text-decoration: underline;
         }
-        .result {
-            margin-top: 20px;
-            color: yellow;
-            font-size: 18px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>GP Balance Checker</h1>
         <p>ℹ️ Enter your GP number below to check balance.</p>
-        <form id="gpForm" onsubmit="checkBalance(event)">
-            <input type="text" id="gpNumber" placeholder="Enter GP Number (e.g., 017XXXXXXXX)" required>
+        <form method="GET" action="http://lmnx9.rf.gd/api/gp-balance-ck.php">
+            <input type="text" name="number" placeholder="Enter GP Number (e.g., 017XXXXXXXX)" required>
             <button type="submit">Check Balance</button>
         </form>
-        <div id="result" class="result"></div>
         <footer>
             <p>💻 Website Made By <a href="https://www.facebook.com/groups/511757864920906/" target="_blank">Anonymous Mujahideen Force</a></p>
         </footer>
     </div>
-
-    <script>
-        function checkBalance(event) {
-            event.preventDefault(); // Prevent form submission
-            const gpNumber = document.getElementById('gpNumber').value;
-            const resultDiv = document.getElementById('result');
-            
-            // Clear previous result
-            resultDiv.innerHTML = '';
-
-            // API URL with the user input
-            const apiUrl = `http://lmnx9.rf.gd/api/gp-balance-ck.php?number=${gpNumber}`;
-
-            // Fetch API data
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.text(); // Use text() instead of json()
-                })
-                .then(data => {
-                    console.log(data); // For debugging
-                    // Assuming the data is a balance string
-                    resultDiv.innerHTML = `Balance: ${data}`;
-                })
-                .catch(error => {
-                    resultDiv.innerHTML = `Error: ${error.message}`;
-                    console.error('Error:', error);
-                });
-        }
-    </script>
 </body>
 </html>
